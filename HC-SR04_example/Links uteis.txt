@@ -1,0 +1,2 @@
+O hc-sr04 é praticamente igual ao SRF04 excepto que o SRF04 tem 5 pins (1 não se connecta):
+http://www.robot-electronics.co.uk/htm/srf04tech.htm
