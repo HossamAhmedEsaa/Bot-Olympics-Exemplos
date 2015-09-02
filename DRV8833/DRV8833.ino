@@ -1,6 +1,5 @@
 /*
     Exemplo para usar o driver DRV8833 para controla 2 motores DC que sejam usados para mover uma plataforma.
-
     Os pins "A" do driver dizem respeita ao motor esquerdo enquanto que os "B" são do motor da direita.
     
     Apenas se pode usar os pins 3, 5, 6, 9, 10, and 11 (é preciso poderem dar PWM).
@@ -16,7 +15,7 @@
       5(AIN1) -   AIN1
       6(AIN2) -   AIN2
       9(BIN1) -   BIN1
-     10(AIN1) -   BIN2
+     10(BIN2) -   BIN2
 */
 #define AIN1 5
 #define AIN2 6
@@ -35,8 +34,10 @@ void setup() {
 */
   Motors_Init();
   
+ 
+
   /* Põe os dois motores a velocidade 50 de 255 */
-  MotorSpeed(50,50);
+  MotorsSpeed(20,20);
 }
 
 void loop() {
@@ -62,9 +63,9 @@ void Motors_Init() {
   Muda a velocidade de só do motor da esquerda
 */
 void MotorEsqSpeed(int Speed) {
-  if (Speed = 0) {
-    digitalWrite(AIN1, HIGH);
-    digitalWrite(AIN2, HIGH);
+  if (Speed == 0) {
+    digitalWrite(AIN1, 1);
+    digitalWrite(AIN2, 1);
   }
   bool forwards = 1;
 
@@ -72,6 +73,10 @@ void MotorEsqSpeed(int Speed) {
     Speed = Speed * (-1);
     forwards = 0;
   }
+  if(Speed > 255)
+    Speed = 255;
+    
+  Speed = 255-Speed;
 
   if (forwards) {
     digitalWrite(AIN1, HIGH);
@@ -87,9 +92,9 @@ void MotorEsqSpeed(int Speed) {
   Muda a velocidade de só do motor da direita
 */
 void MotorDirSpeed(int Speed) {
-  if (Speed = 0) {
-    digitalWrite(BIN1, HIGH);
-    digitalWrite(BIN2, HIGH);
+  if (Speed == 0) {
+    digitalWrite(BIN1, 1);
+    digitalWrite(BIN2, 1);
   }
   bool forwards = 1;
 
@@ -97,7 +102,10 @@ void MotorDirSpeed(int Speed) {
     Speed = Speed * (-1);
     forwards = 0;
   }
-
+  if(Speed > 255)
+    Speed = 255;
+    
+Speed = 255-Speed;
   if (forwards) {
     digitalWrite(BIN1, HIGH);
     analogWrite(BIN2, Speed);
