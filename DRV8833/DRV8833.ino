@@ -13,14 +13,14 @@
   Conectar:
   Arduino UNO - DRV8833
       5(AIN1) -   AIN1
-      6(AIN2) -   AIN2
+      3(AIN2) -   AIN2
       9(BIN1) -   BIN1
-     10(BIN2) -   BIN2
+     6(BIN2) -   BIN2
 */
 #define AIN1 5
-#define AIN2 6
+#define AIN2 3
 #define BIN1 9
-#define BIN2 10
+#define BIN2 6
 
 void Motors_Init();
 void MotorEsqSpeed(int Speed);
@@ -37,7 +37,7 @@ void setup() {
  
 
   /* Põe os dois motores a velocidade 50 de 255 */
-  MotorsSpeed(20,20);
+  MotorsSpeed(60,60);
 }
 
 void loop() {
@@ -62,7 +62,7 @@ void Motors_Init() {
 /*
   Muda a velocidade de só do motor da esquerda
 */
-void MotorEsqSpeed(int Speed) {
+void MotorDirSpeed(int Speed) {
   if (Speed == 0) {
     digitalWrite(AIN1, 1);
     digitalWrite(AIN2, 1);
@@ -91,7 +91,7 @@ void MotorEsqSpeed(int Speed) {
 /*
   Muda a velocidade de só do motor da direita
 */
-void MotorDirSpeed(int Speed) {
+void MotorEsqSpeed(int Speed) {
   if (Speed == 0) {
     digitalWrite(BIN1, 1);
     digitalWrite(BIN2, 1);
@@ -123,3 +123,4 @@ void MotorsSpeed(int Vel_Esq, int Vel_Dir) {
   MotorEsqSpeed(Vel_Esq);
   MotorDirSpeed(Vel_Dir);
 }
+
