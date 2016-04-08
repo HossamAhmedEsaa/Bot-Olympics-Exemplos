@@ -2,9 +2,11 @@
     Example for HC-SR04, SRF04 or SRF05 in 2 pin mode.
 */
 
+//#define ECHOPIN 12                            // Pin to receive echo pulse 
+//#define TRIGPIN 11                           // Pin to send trigger pulse 
 
-#define ECHOPIN 2                            // Pin to receive echo pulse
-#define TRIGPIN 3                            // Pin to send trigger pulse
+#define ECHOPIN 4                            // Pin to receive echo pulse 
+#define TRIGPIN 2                            // Pin to send trigger pulse 
 
 void setup(){
   Serial.begin(9600);
