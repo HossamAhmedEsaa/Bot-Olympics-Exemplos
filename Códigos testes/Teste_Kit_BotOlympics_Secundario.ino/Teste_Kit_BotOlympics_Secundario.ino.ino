@@ -11,8 +11,8 @@ const int LINEPIN_Table[] = {A0, A1, A2};
 int button_pressed = 0;
 
 #define NUMBER_OF_SONARS 3
-const int TRIGPIN_Table[] = { 11, 2, 7};
-const int   ECHOPIN_Table[] = { 12, 4, 10};
+const int TRIGPIN_Table[] = { 11, 2, 0};
+const int   ECHOPIN_Table[] = { 12, 4, 1};
 /*
   Conectar:
   Arduino UNO - DRV8833
