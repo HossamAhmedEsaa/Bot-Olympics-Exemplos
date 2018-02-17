@@ -149,13 +149,17 @@ void Get_Sonars(int data[], int n){
 /*
   Chamem isto para configurar os pins.
 */
+#define SENTIDO_MOTOR1 -1
+#define SENTIDO_MOTOR2 -1
+/*
+  Chamem isto para configurar os pins.
+*/
 void Motors_Init() {
   pinMode(AIN1, OUTPUT);
   pinMode(AIN2, OUTPUT);
   pinMode(BIN1, OUTPUT);
   pinMode(BIN2, OUTPUT);
 }
-
 /*
   Muda a velocidade de só do motor da esquerda
 */
@@ -170,10 +174,10 @@ void MotorDirSpeed(int Speed) {
     Speed = Speed * (-1);
     forwards = 0;
   }
-  if(Speed > 255)
+  if (Speed > 255)
     Speed = 255;
-    
-  Speed = 255-Speed;
+
+  Speed = 255 - Speed;
 
   if (forwards) {
     digitalWrite(AIN1, HIGH);
@@ -181,7 +185,7 @@ void MotorDirSpeed(int Speed) {
   }
   else {
     analogWrite(AIN1, Speed);
-    digitalWrite(AIN2, HIGH);  
+    digitalWrite(AIN2, HIGH);
   }
 }
 
@@ -199,17 +203,17 @@ void MotorEsqSpeed(int Speed) {
     Speed = Speed * (-1);
     forwards = 0;
   }
-  if(Speed > 255)
+  if (Speed > 255)
     Speed = 255;
-    
-Speed = 255-Speed;
+
+  Speed = 255 - Speed;
   if (forwards) {
     digitalWrite(BIN1, HIGH);
     analogWrite(BIN2, Speed);
   }
   else {
     analogWrite(BIN1, Speed);
-    digitalWrite(BIN2, HIGH);  
+    digitalWrite(BIN2, HIGH);
   }
 }
 
@@ -217,7 +221,6 @@ Speed = 255-Speed;
   Muda a velocidade de ambos os motores
 */
 void MotorsSpeed(int Vel_Esq, int Vel_Dir) {
-  MotorEsqSpeed(Vel_Esq);
-  MotorDirSpeed(Vel_Dir);
+  MotorEsqSpeed(SENTIDO_MOTOR1*Vel_Esq);
+  MotorDirSpeed(SENTIDO_MOTOR2*Vel_Dir);
 }
-
