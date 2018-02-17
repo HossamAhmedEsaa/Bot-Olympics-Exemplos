@@ -1,8 +1,14 @@
+/* 
+  Selecionem o que querem testar atravez das macros "DEBUG_XXX". Comentem com // os testes que não querem que corram.
 
-#include <Wire.h>
+  Para iniciar carreguem uma vez no botão verde.
+  Depois disso, para testar motores/ventoinha mantenham o botão verde premido durante algum tempo.
+
+*/
+
 #include "Adafruit_TCS34725.h"
 
-Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_24MS, TCS34725_GAIN_1X);
+Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_2_4MS, TCS34725_GAIN_1X);
 
 
 
@@ -19,11 +25,11 @@ Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_24MS, TCS3472
 #define BUTTON_PIN 8
 int button_pressed = 0;
 
-#define FANPIN A1
+#define FANPIN 10
 
 #define NUMBER_OF_SONARS 3
-const int TRIGPIN_Table[] = { 11, 2, 7};
-const int   ECHOPIN_Table[] = { 12, 4, 10};
+const int TRIGPIN_Table[] = { 11, 2, 0};
+const int   ECHOPIN_Table[] = { 12, 4, 1};
 /*
   Conectar:
   Arduino UNO - DRV8833
@@ -43,12 +49,15 @@ void MotorDirSpeed(int Speed);
 void MotorsSpeed(int Vel_Esq, int Vel_Dir);
 
 void setup() {
+  pinMode(BUTTON_PIN, INPUT);
+  while(digitalRead(BUTTON_PIN) == 0);
+  
   Serial.begin(9600);
 
   #ifdef DEBUG_MOTORS
     Fan_Init();
     Motors_Init();
-    pinMode(BUTTON_PIN, INPUT);
+
   #endif
 
   #ifdef DEBUG_SONARS
@@ -56,12 +65,7 @@ void setup() {
   #endif
 
   #ifdef DEBUG_COLOR
-  if (tcs.begin()) {
-    Serial.println("Found sensor");
-  } else {
-    Serial.println("No TCS34725 found ... check your connections");
-    while (1);
-  }
+  tcs.begin();
   #endif
 }
 
@@ -117,9 +121,9 @@ void loop() {
       MotorsSpeed(0, 0);
       Serial.println("Agora a ventoinha irá ligar");
       delay(2000);
-      digitalWrite(FANPIN, 1);
-      delay(2000);
       digitalWrite(FANPIN, 0);
+      delay(2000);
+      digitalWrite(FANPIN,  1);
       Serial.println("Teste de motores acabou");
       delay(2000);
     }
@@ -130,13 +134,14 @@ void loop() {
     Serial.println(analogRead(FLAME_PIN));
   #endif
   Serial.println("----------------------------------------------------------\n");
-  delay(1000);
+  delay(100);
 }
 
 
 void Fan_Init(){
 
  pinMode(FANPIN, OUTPUT);
+ digitalWrite(FANPIN,HIGH);
 }
 
 
@@ -174,7 +179,8 @@ void Get_Sonars(int data[], int n){
       digitalWrite(TRIGPIN_Table[i], HIGH);                  // Send a 10uS high to trigger ranging
       delayMicroseconds(10);
       digitalWrite(TRIGPIN_Table[i], LOW);                   // Send pin low again
-      int distance = pulseIn(ECHOPIN_Table[i], HIGH);        // Read in times pulse
+      volatile int distance = pulseIn(ECHOPIN_Table[i], HIGH);        // Read in times pulse
+      //Serial.print(TRIGPIN_Table[i]); Serial.print(" "); Serial.println(ECHOPIN_Table[i]);
       data[i]= distance/58;                        // Calculate distance from time of pulse
       delay(50);    
   }
@@ -186,13 +192,17 @@ void Get_Sonars(int data[], int n){
 /*
   Chamem isto para configurar os pins.
 */
+#define SENTIDO_MOTOR1 -1
+#define SENTIDO_MOTOR2 -1
+/*
+  Chamem isto para configurar os pins.
+*/
 void Motors_Init() {
   pinMode(AIN1, OUTPUT);
   pinMode(AIN2, OUTPUT);
   pinMode(BIN1, OUTPUT);
   pinMode(BIN2, OUTPUT);
 }
-
 /*
   Muda a velocidade de só do motor da esquerda
 */
@@ -207,10 +217,10 @@ void MotorDirSpeed(int Speed) {
     Speed = Speed * (-1);
     forwards = 0;
   }
-  if(Speed > 255)
+  if (Speed > 255)
     Speed = 255;
-    
-  Speed = 255-Speed;
+
+  Speed = 255 - Speed;
 
   if (forwards) {
     digitalWrite(AIN1, HIGH);
@@ -218,7 +228,7 @@ void MotorDirSpeed(int Speed) {
   }
   else {
     analogWrite(AIN1, Speed);
-    digitalWrite(AIN2, HIGH);  
+    digitalWrite(AIN2, HIGH);
   }
 }
 
@@ -236,17 +246,17 @@ void MotorEsqSpeed(int Speed) {
     Speed = Speed * (-1);
     forwards = 0;
   }
-  if(Speed > 255)
+  if (Speed > 255)
     Speed = 255;
-    
-Speed = 255-Speed;
+
+  Speed = 255 - Speed;
   if (forwards) {
     digitalWrite(BIN1, HIGH);
     analogWrite(BIN2, Speed);
   }
   else {
     analogWrite(BIN1, Speed);
-    digitalWrite(BIN2, HIGH);  
+    digitalWrite(BIN2, HIGH);
   }
 }
 
@@ -254,7 +264,6 @@ Speed = 255-Speed;
   Muda a velocidade de ambos os motores
 */
 void MotorsSpeed(int Vel_Esq, int Vel_Dir) {
-  MotorEsqSpeed(Vel_Esq);
-  MotorDirSpeed(Vel_Dir);
+  MotorEsqSpeed(SENTIDO_MOTOR1*Vel_Esq);
+  MotorDirSpeed(SENTIDO_MOTOR2*Vel_Dir);
 }
-
